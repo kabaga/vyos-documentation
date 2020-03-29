@@ -12,14 +12,7 @@ Address
 
 .. cfgcmd:: set interfaces ethernet <interface> address <address | dhcp | dhcpv6>
 
-   Configure interface `<interface>` with one or more interface addresses.
-
-   * **address** can be specified multiple times as IPv4 and/or IPv6 address,
-     e.g. 192.0.2.1/24 and/or 2001:db8::1/64
-   * **dhcp** interface address is received by DHCP from a DHCP server on this
-     segment.
-   * **dhcpv6** interface address is received by DHCPv6 from a DHCPv6 server on
-     this segment.
+   .. include:: common-ip-ipv6-addr.txt
 
    Example:
 
@@ -101,20 +94,6 @@ Link Administration
 
    Configure :abbr:`MTU (Maximum Transmission Unit)` on given `<interface>`. It
    is the size (in bytes) of the largest ethernet frame sent on this link.
-
-Router Advertisements
----------------------
-
-Router advertisements are described in :rfc:`4861#section-4.6.2`. They are part
-of what is known as :abbr:`SLAAC (Stateless Address Autoconfiguration)`.
-
-.. cfgcmd:: set interfaces ethernet <interface> ipv6 router-advert send-advert <true | false>
-
-   Enable or disable router advertisements in this `<interface>`.
-
-.. cfgcmd:: set interfaces ethernet <interface> ipv6 router-advert prefix <prefix>
-
-   Prefix information is described in :rfc:`4861#section-4.6.2`.
 
 Operation
 =========

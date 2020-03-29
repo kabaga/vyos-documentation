@@ -1,8 +1,8 @@
-.. _network-interfaces:
+.. _advanced_network-interfaces:
 
-##################
-Network Interfaces
-##################
+###########################
+Advanced Network Interfaces
+###########################
 
 .. toctree::
    :maxdepth: 1
@@ -11,6 +11,7 @@ Network Interfaces
    bridge
    bond
    l2tpv3
+   pseudo-ethernet
    wireless
    tunnel
    vlan

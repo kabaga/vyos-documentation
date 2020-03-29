@@ -36,7 +36,7 @@ To be able to use Docker_, the current non-root user should be added to the
 
 .. note:: The build process needs to be built on a local file system, building
    on SMB or NFS shares will result in the container failing to build properly!
-   VirtualBox Drive Share is also not an option as block device operations 
+   VirtualBox Drive Share is also not an option as block device operations
    are not implemented and the drive is always mounted as "nodev"
 
 Build Docker Container
@@ -87,10 +87,12 @@ To select the container you want to run, you need to specify the branch you are
 interested in, this can be easily done by selecting the appropriate container
 image:
 
-* For VyOS 1.2 (crux) use ``vyos/vyos-build:crux``
-* For VyOS 1.3 (equuleus) use ``vyos/vyos-build:equuleus``
-* For our VyOS rolling release you should use ``vyos/vyos-build`` which will
-  always refer to the latest image.
+* VyOS 1.2 (crux) use ``vyos/vyos-build:crux``
+* VyOS rolling release you should use ``vyos/vyos-build`` which will always
+  refer to the latest image.
+
+Customisation
+^^^^^^^^^^^^^
 
 This ISO can be customized with the following list of configure options.
 The full and current list can be generated with ``./configure --help``:
@@ -127,6 +129,43 @@ Good luck!
 .. note:: The build process does not differentiate when building a ``crux`` ISO
    or ``rolling`` image. Make sure to choose the matching container for the
    version of VyOS that is being built.
+
+Development
+^^^^^^^^^^^
+
+If you are brave enough to build yourself an ISO image containing any modified
+package from our GitHub organisation - this is the place to be.
+
+Building an ISO with a customized package is in no way different then building
+a regular (customized or not) ISO image. Simply place your modified `*.deb`
+package inside the `packages` folder within `vyos-build`. You may need to create
+the folder in advance.
+
+Troubleshooting
+^^^^^^^^^^^^^^^
+
+Debian APT is not very verbose when it comes to errors. If your ISO build breaks
+for whatever reason and you supect its a problem with APT dependencies or
+installation you can add this small patch which increases the APT verbosity
+during ISO build.
+
+.. code-block:: Python
+
+  diff --git i/scripts/live-build-config w/scripts/live-build-config
+  index 1b3b454..3696e4e 100755
+  --- i/scripts/live-build-config
+  +++ w/scripts/live-build-config
+  @@ -57,7 +57,8 @@ lb config noauto \
+           --firmware-binary false \
+           --updates true \
+           --security true \
+  -        --apt-options "--yes -oAcquire::Check-Valid-Until=false" \
+  +        --apt-options "--yes -oAcquire::Check-Valid-Until=false -oDebug::BuildDeps=true -oDebug::pkgDepCache::AutoInstall=true \
+  +                             -oDebug::pkgDepCache::Marker=true -oDebug::pkgProblemResolver=true -oDebug::Acquire::gpgv=true" \
+           --apt-indices false
+           "${@}"
+   """
+
 
 .. _build_packages:
 

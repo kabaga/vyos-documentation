@@ -1,8 +1,8 @@
-.. _basic_system_config:
+.. _basic_system_tweaks:
 
-####################
-System Configuration
-####################
+###################
+Basic System Tweaks
+###################
 
 .. toctree::
    :maxdepth: 2

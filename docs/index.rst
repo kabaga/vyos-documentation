@@ -34,10 +34,11 @@ VyOS User Guide
    :maxdepth: 2
 
    interfaces/advanced-index
+   system/advanced-index
    services/index
-   system/index
    firewall
    routing/index
+   vrf
    nat
    nptv6
    qos
@@ -59,6 +60,8 @@ VyOS User Guide
    appendix/vyos-on-baremetal
    appendix/migrate-from-vyatta
    appendix/command-scripting
+   appendix/http-api
+   appendix/vyos-on-gns3
 
 
 .. toctree::

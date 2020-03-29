@@ -34,6 +34,9 @@ Static Routes
 
    Range is 1 to 255, default is 1.
 
+   .. note:: Routes with a distance of 255 are effectively disabled and not
+      installed into the kernel.
+
 .. cfgcmd:: set protocols static route6 <subnet> next-hop <address>
 
    Configure next-hop `<address>` for an IPv6 static route. Multiple static
@@ -50,8 +53,8 @@ Static Routes
 
    Range is 1 to 255, default is 1.
 
-.. note:: Routes with a distance of 255 are effectively disabled and not
-   installed into the kernel.
+   .. note:: Routes with a distance of 255 are effectively disabled and not
+      installed into the kernel.
 
 
 Interface Routes
@@ -125,6 +128,7 @@ Blackhole
 Alternate Routing Tables
 ========================
 
-Alternate routing tables are used with policy based routing.
-
 TBD
+
+Alternate routing tables are used with policy based routing of by utilizing
+:ref:`vrf`.
