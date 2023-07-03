@@ -1,7 +1,11 @@
+# Sphinx
+_build/
+
 # python virtualenv
 venv/
 ENV/
 .venv
+Pipfile.lock
 
 # put various editor ignores here
 .vscode/
@@ -9,10 +13,13 @@ ENV/
 *.vpw
 *.vpwhist
 *.vtg
+.idea/
+.idea
+.idea/*
 
 # python cache files
 *.pyc
-__pychache__
+__pycache__
 
 # dotenv
 .env

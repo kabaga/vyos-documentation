@@ -8,9 +8,9 @@ SPHINXPROJ    = VyOS
 SOURCEDIR     = .
 BUILDDIR      = _build
 
-AUTOHOST      =0.0.0.0
-AUTOPORT      =8000
-AUTOOPTS      =--poll
+AUTOHOST      = 0.0.0.0
+AUTOPORT      = 8000
+AUTOOPTS      = --watch .
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -27,3 +27,7 @@ livehtml:
 	sphinx-autobuild --host $(AUTOHOST) --port $(AUTOPORT) $(AUTOOPTS) \
 		"$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+
+defaultvalue: export VYOS_DEFAULT=True
+defaultvalue:	
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

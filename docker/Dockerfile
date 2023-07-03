@@ -1,7 +1,7 @@
 # Must be run with --privileged flag
 # Recommended to run the container with a volume mapped
 # in order to easy exprort images built to "external" world
-FROM debian:buster
+FROM debian:11
 LABEL authors="VyOS Maintainers <maintainers@vyos.io>"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -32,6 +32,11 @@ RUN apt-get update && apt-get install -y \
 RUN pip3 install Sphinx
 RUN pip3 install sphinx-rtd-theme
 RUN pip3 install sphinx-autobuild
+RUN pip3 install sphinx-notfound-page
+RUN pip3 install lxml
+RUN pip3 install myst-parser
+RUN pip3 install sphinx-panels
+
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/*
@@ -42,8 +47,6 @@ EXPOSE 8000
 RUN sed "s/^%sudo.*/%sudo\tALL=(ALL) NOPASSWD:ALL/g" -i /etc/sudoers && \
     chmod a+s /usr/sbin/useradd /usr/sbin/groupadd /usr/sbin/gosu /usr/sbin/usermod
 
-# vale
-RUN curl -sfL https://install.goreleaser.com/github.com/ValeLint/vale.sh | sh -s v1.7.1
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 

@@ -24,7 +24,7 @@ The README.md file will guide you to use the this top level repository.
 Submit a Patch
 ==============
 
-Patches are always more then welcome. To have a clean and easy to maintain
+Patches are always more than welcome. To have a clean and easy to maintain
 repository we have some guidelines when working with Git. A clean repository
 eases the automatic generation of a changelog file.
 
@@ -69,6 +69,7 @@ Writing good commit messages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The format should be and is inspired by: https://git-scm.com/book/ch5-2.html
+It is also worth reading https://chris.beams.io/posts/git-commit/
 
 * A single, short, summary of the commit (recommended 50 characters or less,
   not exceeding 80 characters) containing a prefix of the changed component
@@ -270,7 +271,7 @@ device if you happen to be a crazy scientist.
 
   #!/usr/bin/env python3
   #
-  # Copyright (C) 2019 VyOS maintainers and contributors
+  # Copyright (C) 2020 VyOS maintainers and contributors
   #
   # This program is free software; you can redistribute it and/or modify
   # it under the terms of the GNU General Public License version 2 or later as
@@ -290,10 +291,16 @@ device if you happen to be a crazy scientist.
   from vyos import ConfigError
 
   def get_config():
-      vc = Config()
+      if config:
+          conf = config
+      else:
+          conf = Config()
+
+      # Base path to CLI nodes
+      base = ['...', '...']
       # Convert the VyOS config to an abstract internal representation
-      config = ...
-      return config
+      config_data = conf.get_config_dict(base, key_mangling=('-', '_'), get_first_key=True)
+      return config_data
 
   def verify(config):
       # Verify that configuration is valid
@@ -310,8 +317,10 @@ device if you happen to be a crazy scientist.
       pass
 
   try:
-      config = get_config()
-      verify(config)
+      c = get_config()
+      verify(c)
+      generate(c)
+      apply(c)
   except ConfigError as e:
       print(e)
       sys.exit(1)
@@ -649,8 +658,8 @@ Migrating old CLI
        validation is better left to commit-time scripts
    * - priority: 999
      - <properties> <priority>999</priority>
-     - Please leave a comment explaining why the priority was chosen (e.g. "after
-       interfaces are configured")
+     - Please leave a comment explaining why the priority was chosen
+       (e.g. "after interfaces are configured")
    * - multi:
      - <properties> <multi/>
      - Only applicable to leaf nodes
@@ -673,40 +682,31 @@ Migrating old CLI
      - None
      - All logic should be in the scripts
 
-Debugging
-=========
+C++ Backend Code
+================
 
-There are two flags available to aid in debugging configuration scripts.
-Since configuration loading issues will manifest during boot, the flags are
-passed as kernel boot parameters.
+The CLI parser used in VyOS is a mix of bash, bash-completion helper and the
+C++ backend library [vyatta-cfg](https://github.com/vyos/vyatta-cfg). This
+section is a reference of common CLI commands and the respective entry point
+in the C/C++ code.
 
-Kernel boot parameters
-----------------------
+* ``set``
 
-``vyos-debug``
-^^^^^^^^^^^^^^
+  - https://github.com/vyos/vyatta-cfg/blob/0f42786a0b3/src/cstore/cstore.cpp#L352
+  - https://github.com/vyos/vyatta-cfg/blob/0f42786a0b3/src/cstore/cstore.cpp#L2549
 
-Adding the parameter ``vyos-debug`` to the linux boot line will produce
-timing results for the execution of scripts during commit. If one is seeing
-an unexpected delay during manual or boot commit, this may be useful in
-identifying bottlenecks. The internal flag is ``VYOS_DEBUG``, and is found in
-vyatta-cfg_. Output is directed to ``/var/log/vyatta/cfg-stdout.log``.
 
-``vyos-config-debug``
-^^^^^^^^^^^^^^^^^^^^^
+* ``commit``
 
-During development, coding errors can lead to a commit failure on boot,
-possibly resulting in a failed initialization of the CLI. In this
-circumstance, the kernel boot parameter ``vyos-config-debug`` will ensure
-access to the system as user ``vyos``, and will log a Python stack trace to
-``/tmp/boot-config-trace``.
+  - https://github.com/vyos/vyatta-cfg/blob/0f42786a0b3/src/commit/commit-algorithm.cpp#L1252
+
 
 Continuous Integration
 ======================
 
-VyOS makes use of Jenkins_ as our Continuous Integration (CI) service. Our CI
-server is publicly accessible here: https://ci.vyos.net. You can get a brief
-overview of all required components shipped in a VyOS ISO.
+VyOS makes use of Jenkins_ as our Continuous Integration (CI) service. Our
+`VyOS CI`_ server is publicly accessible here: https://ci.vyos.net. You can get
+a brief overview of all required components shipped in a VyOS ISO.
 
 To build our modules we utilize a CI/CD Pipeline script. Each and every VyOS
 component comes with it's own ``Jenkinsfile`` which is (more or less) a copy.
@@ -719,16 +719,20 @@ found. After a successful run the resulting Debian Package(s) will be deployed
 to our Debian repository which is used during build time. It is located here:
 http://dev.packages.vyos.net/repositories/.
 
+
+.. stop_vyoslinter
+
+.. _Jenkins: https://jenkins.io/
+.. _Dockerhub: https://hub.docker.com/u/vyos/
 .. _process: https://blog.vyos.io/vyos-development-digest-10
 .. _VyConf: https://github.com/vyos/vyconf/tree/master/data/schemata
 .. _vyos-1x: https://github.com/vyos/vyos-1x/tree/current/schema
 .. _Jinja2: https://jinja.palletsprojects.com/
-.. _Jenkins: https://jenkins.io/
-.. _Dockerhub: https://hub.docker.com/u/vyos/
-.. _`IPv4, IPv6 and DHCP(v6)`: https://github.com/vyos/vyos-1x/tree/current/interface-definitions/include/address-ipv4-ipv6-dhcp.xml.i
-.. _`IPv4, IPv6`: https://github.com/vyos/vyos-1x/tree/current/interface-definitions/include/address-ipv4-ipv6.xml.i
-.. _`VLAN (VIF)`: https://github.com/vyos/vyos-1x/tree/current/interface-definitions/include/vif.xml.i
-.. _`MAC address`: https://github.com/vyos/vyos-1x/tree/current/interface-definitions/include/interface-mac.xml.i
-.. _vyatta-cfg: https://github.com/vyos/vyatta-cfg
+.. _`IPv4, IPv6 and DHCP(v6)`: https://github.com/vyos/vyos-1x/blob/current/interface-definitions/include/interface/address-ipv4-ipv6-dhcp.xml.i
+.. _`IPv4, IPv6`: https://github.com/vyos/vyos-1x/blob/current/interface-definitions/include/interface/address-ipv4-ipv6.xml.i
+.. _`VLAN (VIF)`: https://github.com/vyos/vyos-1x/blob/current/interface-definitions/include/interface/vif.xml.i
+.. _`MAC address`: https://github.com/vyos/vyos-1x/blob/current/interface-definitions/include/interface/mac.xml.i
 
-.. include:: ../common-references.rst
+.. include:: /_include/common-references.txt
+
+.. start_vyoslinter

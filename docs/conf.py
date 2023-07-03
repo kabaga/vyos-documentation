@@ -22,14 +22,14 @@ from docutils.parsers.rst.roles import set_classes
 # -- Project information -----------------------------------------------------
 
 project = u'VyOS'
-copyright = u'2020, VyOS maintainers and contributors'
+copyright = u'2021, VyOS maintainers and contributors'
 author = u'VyOS maintainers and contributors'
 
 # The short X.Y version
-version = u'1.3'
+version = u'1.4'
 
 # The full version, including alpha/beta/rc tags
-release = u'1.3.x (equuleus)'
+release = u'1.4.x (sagitta)'
 
 # -- General configuration ---------------------------------------------------
 
@@ -44,17 +44,25 @@ extensions = ['sphinx.ext.intersphinx',
               'sphinx.ext.todo',
               'sphinx.ext.ifconfig',
               'sphinx.ext.graphviz',
+              'notfound.extension',
+              'autosectionlabel',
+              'myst_parser',
+              'sphinx_panels',
               'vyos'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+# autosectionlabel
+autosectionlabel_prefix_document = True
+
+
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
@@ -66,10 +74,16 @@ master_doc = 'index'
 # Usually you set "language" from the command line for these cases.
 language = None
 
+# https://docs.readthedocs.io/en/stable/guides/manage-translations-sphinx.html#create-translatable-files
+locale_dirs = ['_locale/']
+gettext_compact = False
+gettext_uuid = True
+
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = [u'_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = [u'_build', 'Thumbs.db', '.DS_Store', '_include/vyos-1x']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
